@@ -2,10 +2,8 @@ import React, { Component } from "react";
 
 export default class SudokuField extends Component {
   handleChange = e => {
-    const value = parseInt(e.target.value, 10);
-    if (value) {
-      this.props.onChange({ ...this.props.field, value });
-    }
+    const value = e.target.value === "" ? null : parseInt(e.target.value, 10);
+    this.props.onChange({ ...this.props.field, value });
   };
 
   render() {

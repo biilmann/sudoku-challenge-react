@@ -17,23 +17,25 @@ function generateSudoku() {
   const raw = generator.makepuzzle();
   const result = {
     rows: [],
-    solution: generator.solvepuzzle(raw),
+    solution: generator.solvepuzzle(raw).map(number => number + 1),
     startTime: new Date(),
     curTime: new Date()
   };
   for (let i = 0; i < 9; i++) {
     const row = { index: i, cols: [] };
     for (let j = 0; j < 9; j++) {
+      const value = raw[i * 9 + j];
+      const hasValue = value !== null;
       row.cols[j] = {
         row: i,
         col: j,
-        readonly: raw[i * j] !== null,
-        value: raw[i * j]
+        readonly: hasValue,
+        value: hasValue ? value + 1 : null,
+        valid: hasValue
       };
     }
     result.rows.push(row);
   }
-  console.log(result);
   return result;
 }
 
@@ -41,15 +43,29 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = produce({}, () => ({
-      sudoku: generateSudoku()
+      sudoku: generateSudoku(),
+      solved: false
     }));
+    console.log(this.state);
   }
 
   handleChange = e => {
-    console.log(this.state);
     this.setState(
       produce(state => {
-        state.sudoku.rows[e.row].cols[e.col].value = e.value;
+        const field = state.sudoku.rows[e.row].cols[e.col];
+        field.value = e.value;
+      })
+    );
+  };
+
+  handleSolve = e => {
+    this.setState(
+      produce(state => {
+        state.sudoku.rows.forEach(row => {
+          row.cols.forEach(col => {
+            col.value = state.sudoku.solution[col.row * 9 + col.col];
+          });
+        });
       })
     );
   };
@@ -61,6 +77,7 @@ class App extends Component {
           <h1>Sudoku Chalenge</h1>
         </header>
         <SudokuBoard sudoku={this.state.sudoku} onChange={this.handleChange} />
+        <button onClick={this.handleSolve}>Solve Magically</button>
       </div>
     );
   }
