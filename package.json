@@ -3,9 +3,11 @@
   "version": "0.4.0",
   "private": true,
   "dependencies": {
+    "immer": "^1.7.4",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "react-scripts": "2.0.4"
+    "react-scripts": "2.0.4",
+    "sudoku": "^0.0.2"
   },
   "scripts": {
     "start": "run-p start:**",

@@ -9,7 +9,8 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  padding: 1rem;
+  margin-bottom: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,15 +19,17 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.field {
+  width: 3rem;
+  height: 3rem;
+  text-align: center;
+  font-size: 2rem;
+  color: #888;
+}
+.field[readonly] {
+  color: #222;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.App-link {
+  color: #61dafb;
 }

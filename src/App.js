@@ -1,48 +1,66 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import produce from "immer";
+import generator from "sudoku";
+import SudokuBoard from "./components/SudokuBoard";
+import "./App.css";
 
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { loading: false, msg: null };
+/*
+  Generates a sudoku in this format:
+
+  {
+    rows: [{index: 0, cols: [{value: 1, readonly: 1, row: 0, col: 0}, ...]}, ...],
+    solution: [0, 1, ...],
+    startTime: Date
   }
-
-  handleClick = e => {
-    e.preventDefault();
-
-    this.setState({ loading: true });
-    fetch('/.netlify/functions/hello')
-      .then(response => response.json())
-      .then(json => this.setState({ loading: false, msg: json.msg }));
+*/
+function generateSudoku() {
+  const raw = generator.makepuzzle();
+  const result = {
+    rows: [],
+    solution: generator.solvepuzzle(raw),
+    startTime: new Date(),
+    curTime: new Date()
   };
-
-  render() {
-    const { loading, msg } = this.state;
-
-    return (
-      <p>
-        <button onClick={this.handleClick}>
-          {loading ? 'Loading...' : 'Call Lambda'}
-        </button>
-        <br />
-        <span>{msg}</span>
-      </p>
-    );
+  for (let i = 0; i < 9; i++) {
+    const row = { index: i, cols: [] };
+    for (let j = 0; j < 9; j++) {
+      row.cols[j] = {
+        row: i,
+        col: j,
+        readonly: raw[i * j] !== null,
+        value: raw[i * j]
+      };
+    }
+    result.rows.push(row);
   }
+  console.log(result);
+  return result;
 }
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = produce({}, () => ({
+      sudoku: generateSudoku()
+    }));
+  }
+
+  handleChange = e => {
+    console.log(this.state);
+    this.setState(
+      produce(state => {
+        state.sudoku.rows[e.row].cols[e.col].value = e.value;
+      })
+    );
+  };
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LambdaDemo />
+          <h1>Sudoku Chalenge</h1>
         </header>
+        <SudokuBoard sudoku={this.state.sudoku} onChange={this.handleChange} />
       </div>
     );
   }
