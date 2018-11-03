@@ -19,7 +19,7 @@ function generateSudoku() {
     rows: [],
     solution: generator.solvepuzzle(raw).map(number => number + 1),
     startTime: new Date(),
-    curTime: new Date()
+    solveTime: null
   };
   for (let i = 0; i < 9; i++) {
     const row = { index: i, cols: [] };
@@ -39,14 +39,24 @@ function generateSudoku() {
   return result;
 }
 
+function checkSolution(sudoku) {
+  const candidate = sudoku.rows
+    .map(row => row.cols.map(col => col.value))
+    .flat();
+  for (let i = 0; i < candidate.length; i++) {
+    if (candidate[i] === null || candidate[i] !== sudoku.solution[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = produce({}, () => ({
-      sudoku: generateSudoku(),
-      solved: false
+      sudoku: generateSudoku()
     }));
-    console.log(this.state);
   }
 
   handleChange = e => {
@@ -54,6 +64,9 @@ class App extends Component {
       produce(state => {
         const field = state.sudoku.rows[e.row].cols[e.col];
         field.value = e.value;
+        if (!state.sudoku.solveTime && checkSolution(state.sudoku)) {
+          state.sudoku.solveTime = new Date();
+        }
       })
     );
   };
@@ -66,6 +79,9 @@ class App extends Component {
             col.value = state.sudoku.solution[col.row * 9 + col.col];
           });
         });
+        if (!state.sudoku.solveTime && checkSolution(state.sudoku)) {
+          state.sudoku.solveTime = new Date();
+        }
       })
     );
   };
