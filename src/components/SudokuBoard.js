@@ -9,7 +9,12 @@ export default class SudokuBoard extends Component {
     return (
       <div className="board">
         {sudoku.solveTime ? (
-          <Result start={sudoku.startTime} end={sudoku.solveTime} />
+          <Result
+            start={sudoku.startTime}
+            end={sudoku.solveTime}
+            challenge={sudoku.challengeTime}
+            url={sudoku.shareUrl}
+          />
         ) : (
           <Timer start={sudoku.startTime} />
         )}

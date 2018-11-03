@@ -1,55 +1,8 @@
 import React, { Component } from "react";
 import produce from "immer";
-import generator from "sudoku";
+import { generateSudoku, checkSolution, shareUrl } from "./lib/sudoku";
 import SudokuBoard from "./components/SudokuBoard";
 import "./App.css";
-
-/*
-  Generates a sudoku in this format:
-
-  {
-    rows: [{index: 0, cols: [{value: 1, readonly: 1, row: 0, col: 0}, ...]}, ...],
-    solution: [0, 1, ...],
-    startTime: Date
-  }
-*/
-function generateSudoku() {
-  const raw = generator.makepuzzle();
-  const result = {
-    rows: [],
-    solution: generator.solvepuzzle(raw).map(number => number + 1),
-    startTime: new Date(),
-    solveTime: null
-  };
-  for (let i = 0; i < 9; i++) {
-    const row = { index: i, cols: [] };
-    for (let j = 0; j < 9; j++) {
-      const value = raw[i * 9 + j];
-      const hasValue = value !== null;
-      row.cols[j] = {
-        row: i,
-        col: j,
-        readonly: hasValue,
-        value: hasValue ? value + 1 : null,
-        valid: hasValue
-      };
-    }
-    result.rows.push(row);
-  }
-  return result;
-}
-
-function checkSolution(sudoku) {
-  const candidate = sudoku.rows
-    .map(row => row.cols.map(col => col.value))
-    .flat();
-  for (let i = 0; i < candidate.length; i++) {
-    if (candidate[i] === null || candidate[i] !== sudoku.solution[i]) {
-      return false;
-    }
-  }
-  return true;
-}
 
 class App extends Component {
   constructor(props) {
@@ -66,6 +19,7 @@ class App extends Component {
         field.value = e.value;
         if (!state.sudoku.solveTime && checkSolution(state.sudoku)) {
           state.sudoku.solveTime = new Date();
+          state.sudoku.shareUrl = shareUrl(state.sudoku);
         }
       })
     );
@@ -81,6 +35,7 @@ class App extends Component {
         });
         if (!state.sudoku.solveTime && checkSolution(state.sudoku)) {
           state.sudoku.solveTime = new Date();
+          state.sudoku.shareUrl = shareUrl(state.sudoku);
         }
       })
     );

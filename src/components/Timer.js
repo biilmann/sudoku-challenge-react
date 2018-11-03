@@ -7,6 +7,7 @@ export default class Timer extends Component {
       elapsed: 0
     };
   }
+
   componentDidMount() {
     this.interval = setInterval(
       () =>
