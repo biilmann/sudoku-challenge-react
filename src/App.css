@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }
@@ -19,6 +23,9 @@
   color: white;
 }
 
+.row {
+  min-width: calc(9 * 3rem);
+}
 .field {
   width: 3rem;
   height: 3rem;

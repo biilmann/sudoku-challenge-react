@@ -1,8 +1,16 @@
 import React, { Component } from "react";
+import ChallengeForm from "./ChallengeForm";
 
 export default class Result extends Component {
   render() {
-    const { start, end, url, challenge } = this.props;
+    const {
+      start,
+      end,
+      url,
+      challenge,
+      onChallenge,
+      challengeSent
+    } = this.props;
     const result = Math.floor((end.getTime() - start.getTime()) / 1000);
     return (
       <div>
@@ -28,12 +36,10 @@ export default class Result extends Component {
             </p>
           )}
         {!challenge && (
-          <p>
-            Share the challenge with a friend:{" "}
-            <a href={url} target="_blank">
-              Sudoku Challenge
-            </a>
-          </p>
+          <ChallengeForm
+            onChallenge={onChallenge}
+            challengeSent={challengeSent}
+          />
         )}
       </div>
     );

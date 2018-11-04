@@ -5,7 +5,7 @@ import Result from "./Result";
 
 export default class SudokuBoard extends Component {
   render() {
-    const { sudoku } = this.props;
+    const { sudoku, onChallenge, challengeSent } = this.props;
     return (
       <div className="board">
         {sudoku.solveTime ? (
@@ -14,6 +14,8 @@ export default class SudokuBoard extends Component {
             end={sudoku.solveTime}
             challenge={sudoku.challengeTime}
             url={sudoku.shareUrl}
+            onChallenge={onChallenge}
+            challengeSent={challengeSent}
           />
         ) : (
           <Timer start={sudoku.startTime} />

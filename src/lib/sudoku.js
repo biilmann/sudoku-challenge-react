@@ -17,6 +17,8 @@ export function generateSudoku() {
     solution: generator.solvepuzzle(raw).map(number => number + 1),
     startTime: new Date(),
     solveTime: null,
+    challengeFrom: urlResult && urlResult.from,
+    challengeTo: urlResult && urlResult.to,
     challengeTime: urlResult
       ? Math.floor(
           (new Date(urlResult.solveTime).getTime() -
@@ -43,7 +45,7 @@ export function generateSudoku() {
   return result;
 }
 
-export function shareUrl(sudoku) {
+export function shareUrl(sudoku, from, to) {
   const raw = sudoku.rows
     .map(row => row.cols.map(col => (col.readonly ? col.value - 1 : null)))
     .flat();
@@ -51,7 +53,9 @@ export function shareUrl(sudoku) {
     JSON.stringify({
       startTime: sudoku.startTime,
       solveTime: sudoku.solveTime,
-      raw
+      raw,
+      from,
+      to
     })
   );
 
